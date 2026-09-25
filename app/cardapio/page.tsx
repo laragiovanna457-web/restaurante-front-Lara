@@ -1,89 +1,152 @@
-'use client'
+"use client"
+import { useEffect, useState } from "react"
+import Swal from "sweetalert2"
+import Image from "next/image"
 
-import Image from 'next/image'
-import { useState, useEffect } from 'react'
-
-interface Produto {
-    id: number
-    nome: string
-    descricao: string
-    categoria: string
-    preco: number
-    imagem: string
+interface Produto{
+    id:number,
+    descricao:string,
+    categoria:string,
+    preco:number,
+    imagem:string
 }
 
-export default function CardapioPage() {
-    const [produtos, setProdutos] = useState<Produto[]>([])
-    const [loading, setLoading] = useState(true)
+export default function CardapioAdmin(){
 
-    // Simulando o carregamento do produto com a imagem
-    async function mostrarProdutos() {
-        setProdutos([
-            {
-                id: 1,
-                nome: "Milkshake",
-                descricao: "Delicioso milkshake",
-                categoria: "Bebidas",
-                preco: 15.90,
-                imagem: "/milkshake.jpg"
-            }, // <-- Adicionada vírgula aqui
-            {
-                id: 2,
-                nome: "Hambéguer capivara",
-                descricao: "Hambúrguer temático",
-                categoria: "comida",
-                preco: 19.90,
-                imagem: "/capivara.jpg"
-            }, // <-- Adicionada vírgula aqui
-            {
-                id: 3,
-                nome: "Pizza",
-                descricao: "Pizza doce",
-                categoria: "comida",
-                preco: 20.90,
-                imagem: "/pizzaa.jpg"
+    const [produtos,setProdutos] = useState<Produto[]>([])
+    const [carregando, setCarregando] = useState(true)
+
+    async function carregarProdutos() {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/produtos`)
+
+            if(!response){
+                throw new Error("Erro ao buscar produtos")
             }
-        ])
-        setLoading(false)
+
+            const data = await response.json()
+            setProdutos(data)
+        } catch (error) {
+            console.log(error)
+
+            await Swal.fire({
+                title:"Erro",
+                text:"Não foi possível carregar os produtos",
+                icon:"error",
+                confirmButtonText:"Ok"
+            })
+        } finally{
+            setCarregando(false)
+        }
+
+        
     }
 
-    // Chama a função quando a página carrega
-    useEffect(() => {
-        mostrarProdutos()
-    }, [])
+    async function excluirProduto(id:number) {
+        const resultado = await Swal.fire({
+            title:"Excluir produto?",
+            text:"Essa opção não poderá ser desfeita.",
+            icon:"warning",
+            showCancelButton:true,
+            confirmButtonAriaLabel:"Sim, excluir",
+            cancelButtonColor:"#dc2626",
+            cancelButtonText:"Cancelar",
+            confirmButtonColor:"#6b7280"
+        })
 
-    return (
-        <main className="p-8 bg-white text-gray-900">
-            <h1 className="mb-6 text-3xl font-bold">
-                Cardapio
-            </h1>
+        if(!resultado.isConfirmed){
+            return
+        }
 
-            <div className="grid grid-cols-3 gap-6">
-                {produtos.map((produto) => (
-                    <div key={produto.id}>
-                        <Image
-                            src={produto.imagem} 
-                            alt={produto.nome}
-                            width={400}
-                            height={250}
-                            className="h-80 w-full rounded object-cover"
-                        />
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/produtos/${id}`,{
+                method:"DELETE"
+            })
 
-                        <h2 className="mt-3 text-xl font-semibold">
-                            {produto.nome}
-                        </h2>
+            if(!response.ok){
+                throw new Error("Erro ao excluir produto")
+            }
+            setProdutos((produtosAtuais) => produtosAtuais.filter((produto)=> produto.id !== id))
 
-                        <p className="mt-2 text-lg text-green-700">
-                            R$ {produto.preco.toFixed(2)}
+            await Swal.fire({
+                title:"Excluido",
+                text:"O produto foi excluido com sucesso",
+                icon:"success",
+                confirmButtonText:"Ok"
+            })
+        } catch (error) {
+            console.error(error)
+
+            await Swal.fire({
+                title:"Erro",
+                text:"Não foi possível excluir o produto",
+                icon:"error",
+                confirmButtonText:"Ok"
+            })
+        }
+    }
+
+    useEffect(()=>{
+        carregarProdutos();
+    },[])
+
+    if(carregando){
+        return(
+            <main className="p-8">
+                <p>Carregando produtos...</p>
+            </main>
+        )
+    }
+
+    return(
+        <main className="min-h-screen bg-gray-100 p-8">
+
+            <div className="mx-auto max-w-6xl">
+                <h1 className="font-serif font-bold mb-6 text-3xl">Gerenciar Cardápio</h1>
+
+                {produtos.length === 0 ?(
+                    <div className="rounded-lg bg-white p-8 text-center shadow">
+                        <p className="text-gray-500">
+                            Nenhum produto cadastrado
                         </p>
-
-                        <button
-                            className="mt-4 w-full cursor-pointer rounded bg-gray-900 py-2 text-white hover:bg-gray-800"
-                        >
-                            Fazer pedido
-                        </button>
                     </div>
-                ))}
+                ):(
+                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                        {produtos.map((produto)=>(
+                            <div key={produto.id} className="overflow-hidden rounded-lg bg-white shadow">
+                                {produto.imagem &&(
+                                    <Image
+                                        src={produto.imagem}
+                                        alt={produto.descricao}
+                                        width={400}
+                                        height={250}
+                                        className="h-40 w-full rounded-2xl mt-4 object-contain"
+                                    />
+                                )}
+
+                                <div className="p-5">
+                                    <h2 className="text-xl font-bold font-serif ">
+                                        {produto.descricao}
+                                    </h2>
+                                </div>
+
+                                <p className="px-3 mt-2 text-lg text-gray-500 font-serif">
+                                    {produto.categoria}
+                                </p>
+
+                                <p className="px-3 mt-2 text-lg font-semibold font-serif">
+                                    R$ {Number(produto.preco).toFixed(2)}
+                                </p>
+
+                                <button className="font-serif mt-4 w-full rounded-lg bg-red-950 px-4 py-2 font-semibold text-white hover:bg-red-900"
+                                onClick={()=>excluirProduto(produto.id)}
+                                >
+                                    Excluir
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
         </main>
     )
