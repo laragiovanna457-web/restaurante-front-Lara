@@ -1,7 +1,6 @@
 
 "use client"
 
-import Image from "next/image"
 import { useEffect, useState } from "react"
 import Swal from "sweetalert2"
 
@@ -47,7 +46,7 @@ export default function CardapioAdmin() {
         }
     }
 
-    async function excluirProduto(id:number) {
+    async function excluirProduto(id: number) {
 
         const resultado = await Swal.fire({
             title: "Excluir produto?",
@@ -146,15 +145,12 @@ export default function CardapioAdmin() {
                             >
 
                                 {produto.imagem && (
-                                    <div className="relative h-48 w-full">
-
-                                        <Image
+                                    <div className="relative h-48 w-full bg-gray-200">
+                                        <img
                                             src={produto.imagem}
                                             alt={produto.descricao}
-                                            fill
-                                            className="object-contain"
+                                            className="h-full w-full object-cover"
                                         />
-
                                     </div>
                                 )}
 
@@ -195,6 +191,3 @@ export default function CardapioAdmin() {
         </main>
     )
 }
-
-
-
