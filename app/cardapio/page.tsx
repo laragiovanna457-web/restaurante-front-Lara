@@ -16,18 +16,25 @@ export default function CardapioAdmin(){
     const [produtos,setProdutos] = useState<Produto[]>([])
     const [carregando, setCarregando] = useState(true)
 
-    async function carregarProdutos() {
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/produtos`)
+   async function carregarProdutos() {
+        console.log("Variável de ambiente:", process.env.NEXT_PUBLIC_API_URL); // <-- ADICIONE ISSO
+        console.log("Iniciando a busca dos produtos..."); // <-- ADICIONE ISSO
 
-            if(!response){
-                throw new Error("Erro ao buscar produtos")
+        try {
+            const urlFinal = `${process.env.NEXT_PUBLIC_API_URL}/produtos`;
+            console.log("Fazendo fetch para:", urlFinal); // <-- ADICIONE ISSO
+            
+            const response = await fetch(urlFinal);
+
+            if(!response.ok){ // <-- MELHORIA AQUI TAMBÉM
+                throw new Error(`Erro na API: ${response.status}`)
             }
 
             const data = await response.json()
+            console.log("Dados recebidos:", data); // <-- ADICIONE ISSO
             setProdutos(data)
         } catch (error) {
-            console.log(error)
+            console.error("Caiu no catch!", error) // <-- ADICIONE ISSO
 
             await Swal.fire({
                 title:"Erro",
@@ -38,8 +45,6 @@ export default function CardapioAdmin(){
         } finally{
             setCarregando(false)
         }
-
-        
     }
 
     async function excluirProduto(id:number) {
