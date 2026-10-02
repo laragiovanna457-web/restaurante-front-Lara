@@ -16,7 +16,7 @@ export default function CardapioAdmin(){
     const [produtos,setProdutos] = useState<Produto[]>([])
     const [carregando, setCarregando] = useState(true)
 
-   async function carregarProdutos() {
+    async function carregarProdutos() {
         console.log("Variável de ambiente:", process.env.NEXT_PUBLIC_API_URL);
         console.log("Iniciando a busca dos produtos..."); 
 
@@ -47,50 +47,6 @@ export default function CardapioAdmin(){
         }
     }
 
-    async function excluirProduto(id:number) {
-        const resultado = await Swal.fire({
-            title:"Excluir produto?",
-            text:"Essa opção não poderá ser desfeita.",
-            icon:"warning",
-            showCancelButton:true,
-            confirmButtonAriaLabel:"Sim, excluir",
-            cancelButtonColor:"#dc2626",
-            cancelButtonText:"Cancelar",
-            confirmButtonColor:"#6b7280"
-        })
-
-        if(!resultado.isConfirmed){
-            return
-        }
-
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/produtos/${id}`,{
-                method:"DELETE"
-            })
-
-            if(!response.ok){
-                throw new Error("Erro ao excluir produto")
-            }
-            setProdutos((produtosAtuais) => produtosAtuais.filter((produto)=> produto.id !== id))
-
-            await Swal.fire({
-                title:"Excluido",
-                text:"O produto foi excluido com sucesso",
-                icon:"success",
-                confirmButtonText:"Ok"
-            })
-        } catch (error) {
-            console.error(error)
-
-            await Swal.fire({
-                title:"Erro",
-                text:"Não foi possível excluir o produto",
-                icon:"error",
-                confirmButtonText:"Ok"
-            })
-        }
-    }
-
     useEffect(()=>{
         carregarProdutos();
     },[])
@@ -118,7 +74,7 @@ export default function CardapioAdmin(){
                 ):(
                     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                         {produtos.map((produto)=>(
-                            <div key={produto.id} className="overflow-hidden rounded-lg bg-white shadow">
+                            <div key={produto.id} className="overflow-hidden rounded-lg bg-white shadow pb-5">
                                 {produto.imagem &&(
                                     <Image
                                         src={produto.imagem}
@@ -142,12 +98,6 @@ export default function CardapioAdmin(){
                                 <p className="px-3 mt-2 text-lg font-semibold font-serif text-gray-900">
                                     R$ {Number(produto.preco).toFixed(2)}
                                 </p>
-
-                                <button className="font-serif mt-4 w-full rounded-lg bg-red-700 px-4 py-2 font-semibold text-white hover:bg-red-700"
-                                onClick={()=>excluirProduto(produto.id)}
-                                >
-                                    Excluir
-                                </button>
                             </div>
                         ))}
                     </div>
