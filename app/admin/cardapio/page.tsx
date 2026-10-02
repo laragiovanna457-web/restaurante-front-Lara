@@ -119,7 +119,7 @@ export default function CardapioAdmin() {
 
             <div className="mx-auto max-w-6xl">
 
-                <h1 className="mb-6 text-3xl font-bold">
+                <h1 className="mb-6 text-3xl font-bold text-gray-900">
                     Gerenciar Cardápio
                 </h1>
 
@@ -127,7 +127,7 @@ export default function CardapioAdmin() {
 
                     <div className="rounded-lg bg-white p-8 text-center shadow">
 
-                        <p className="text-gray-500">
+                        <p className="text-gray-900">
                             Nenhum produto cadastrado
                         </p>
 
@@ -156,15 +156,15 @@ export default function CardapioAdmin() {
 
                                 <div className="p-5">
 
-                                    <h2 className="text-xl font-bold">
+                                    <h2 className="text-xl font-bold text-gray-900">
                                         {produto.descricao}
                                     </h2>
 
-                                    <p className="mt-3 text-lg text-gray-500">
+                                    <p className="mt-3 text-lg text-gray-900">
                                         {produto.categoria}
                                     </p>
 
-                                    <p className="mt-3 text-lg font-semibold">
+                                    <p className="mt-3 text-lg font-semibold text-gray-900">
                                         R$ {Number(produto.preco).toFixed(2)}
                                     </p>
 

@@ -63,7 +63,7 @@ export default function CardapioAdmin(){
         <main className="min-h-screen bg-gray-100 p-8">
 
             <div className="mx-auto max-w-6xl">
-                <h1 className="font-serif font-bold mb-6 text-3xl">Gerenciar Cardápio</h1>
+                <h1 className="font-serif font-bold mb-6 text-3xl"></h1>
 
                 {produtos.length === 0 ?(
                     <div className="rounded-lg bg-white p-8 text-center shadow">
