@@ -130,7 +130,7 @@ export default function CardapioAdmin(){
                                 )}
 
                                 <div className="p-5">
-                                    <h2 className="text-xl font-bold font-serif ">
+                                    <h2 className="text-xl font-bold font-serif text-gray-900 ">
                                         {produto.descricao}
                                     </h2>
                                 </div>
@@ -139,7 +139,7 @@ export default function CardapioAdmin(){
                                     {produto.categoria}
                                 </p>
 
-                                <p className="px-3 mt-2 text-lg font-semibold font-serif">
+                                <p className="px-3 mt-2 text-lg font-semibold font-serif text-gray-900">
                                     R$ {Number(produto.preco).toFixed(2)}
                                 </p>
 
