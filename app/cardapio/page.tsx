@@ -17,24 +17,24 @@ export default function CardapioAdmin(){
     const [carregando, setCarregando] = useState(true)
 
    async function carregarProdutos() {
-        console.log("Variável de ambiente:", process.env.NEXT_PUBLIC_API_URL); // <-- ADICIONE ISSO
-        console.log("Iniciando a busca dos produtos..."); // <-- ADICIONE ISSO
+        console.log("Variável de ambiente:", process.env.NEXT_PUBLIC_API_URL);
+        console.log("Iniciando a busca dos produtos..."); 
 
         try {
             const urlFinal = `${process.env.NEXT_PUBLIC_API_URL}/produtos`;
-            console.log("Fazendo fetch para:", urlFinal); // <-- ADICIONE ISSO
+            console.log("Fazendo fetch para:", urlFinal); 
             
             const response = await fetch(urlFinal);
 
-            if(!response.ok){ // <-- MELHORIA AQUI TAMBÉM
+            if(!response.ok){
                 throw new Error(`Erro na API: ${response.status}`)
             }
 
             const data = await response.json()
-            console.log("Dados recebidos:", data); // <-- ADICIONE ISSO
+            console.log("Dados recebidos:", data); 
             setProdutos(data)
         } catch (error) {
-            console.error("Caiu no catch!", error) // <-- ADICIONE ISSO
+            console.error("Caiu no catch!", error)
 
             await Swal.fire({
                 title:"Erro",
@@ -111,7 +111,7 @@ export default function CardapioAdmin(){
 
                 {produtos.length === 0 ?(
                     <div className="rounded-lg bg-white p-8 text-center shadow">
-                        <p className="text-gray-500">
+                        <p className="text-gray-900">
                             Nenhum produto cadastrado
                         </p>
                     </div>
@@ -135,7 +135,7 @@ export default function CardapioAdmin(){
                                     </h2>
                                 </div>
 
-                                <p className="px-3 mt-2 text-lg text-gray-500 font-serif">
+                                <p className="px-3 mt-2 text-lg text-gray-900 font-serif">
                                     {produto.categoria}
                                 </p>
 
@@ -143,7 +143,7 @@ export default function CardapioAdmin(){
                                     R$ {Number(produto.preco).toFixed(2)}
                                 </p>
 
-                                <button className="font-serif mt-4 w-full rounded-lg bg-red-950 px-4 py-2 font-semibold text-white hover:bg-red-900"
+                                <button className="font-serif mt-4 w-full rounded-lg bg-red-700 px-4 py-2 font-semibold text-white hover:bg-red-700"
                                 onClick={()=>excluirProduto(produto.id)}
                                 >
                                     Excluir
